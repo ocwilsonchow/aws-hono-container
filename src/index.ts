@@ -14,7 +14,7 @@ const s3 = new S3Client()
 const app = new Hono()
 
 app.get("/", (c) => {
-  return c.json({ message: "Hello Hono! Another deployment!" })
+  return c.json({ message: "Hello Hono! Another deployment" })
 })
 
 app.post("/", async (c) => {
