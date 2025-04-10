@@ -5,6 +5,10 @@
 
 declare module "sst" {
   export interface Resource {
+    "MyApi": {
+      "type": "sst.aws.ApiGatewayV2"
+      "url": string
+    }
     "MyBucket": {
       "name": string
       "type": "sst.aws.Bucket"
@@ -12,7 +16,6 @@ declare module "sst" {
     "MyService": {
       "service": string
       "type": "sst.aws.Service"
-      "url": string
     }
     "MyVpc": {
       "type": "sst.aws.Vpc"

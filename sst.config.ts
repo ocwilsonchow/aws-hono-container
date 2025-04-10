@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./.sst/platform/config.d.ts" />
 
 export default $config({
@@ -10,19 +11,28 @@ export default $config({
     }
   },
   async run() {
-    const vpc = new sst.aws.Vpc("MyVpc")
+    const vpc = new sst.aws.Vpc("MyVpc", {
+      az: ["ap-east-1b", "ap-east-1c"],
+    })
     const cluster = new sst.aws.Cluster("MyCluster", { vpc })
     const bucket = new sst.aws.Bucket("MyBucket")
-
-    new sst.aws.Service("MyService", {
+    const api = new sst.aws.ApiGatewayV2("MyApi", { vpc })
+    const service = new sst.aws.Service("MyService", {
       cluster,
-      loadBalancer: {
-        ports: [{ listen: "80/http", forward: "3000/http" }],
+      serviceRegistry: {
+        port: 80,
       },
       dev: {
-        command: "npm run dev",
+        command: "pnpm run dev",
       },
       link: [bucket],
     })
+
+    api.routePrivate("$default", service.nodes.cloudmapService.arn)
+
+    return {
+      bucket: bucket.name,
+      api: api.url,
+    }
   },
 })
